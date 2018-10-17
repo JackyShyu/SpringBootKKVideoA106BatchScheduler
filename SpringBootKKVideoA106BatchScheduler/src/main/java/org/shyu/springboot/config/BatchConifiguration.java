@@ -44,6 +44,7 @@ public class BatchConifiguration {
 		return cursorItemReader;
 	}
 	
+	@Bean
 	public PersonItemProcessor processor() {
 		return new PersonItemProcessor();
 	}
@@ -64,6 +65,7 @@ public class BatchConifiguration {
 		return writer;
 	}
 	
+	@Bean
 	public Step step1() {
 		return stepBuilderFactory.get("step1")
 					.<Person,Person>chunk(10)
@@ -73,6 +75,7 @@ public class BatchConifiguration {
 					.build();
 	}
 	
+	@Bean
 	public Job exportPersonJob() {
 		return jobBuilderFactory.get("exportPeronJob")
 					.incrementer(new RunIdIncrementer())
@@ -82,10 +85,10 @@ public class BatchConifiguration {
 	}
 }
 
-class PersonRowMapper implements RowMapper {
+class PersonRowMapper implements RowMapper<Person> {
 
 	@Override
-	public Object mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+	public Person mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 		Person person = new Person(resultSet.getInt("person_id"), resultSet.getString("first_name"), resultSet.getString("last_name"), resultSet.getString("email"), resultSet.getInt("age"));
 		return person;
 	}
